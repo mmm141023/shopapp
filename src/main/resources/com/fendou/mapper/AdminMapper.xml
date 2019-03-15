@@ -67,4 +67,9 @@
       </if>
     </where>
   </select>
+
+
+  <select id="counts" resultType="java.lang.Integer">
+    SELECT count(*) FROM t_admin
+  </select>
 </mapper>

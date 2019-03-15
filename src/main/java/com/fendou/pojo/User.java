@@ -1,5 +1,7 @@
 package com.fendou.pojo;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class User {
@@ -55,6 +57,7 @@ public class User {
      *
      * @mbg.generated
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date rdate;
 
     /**
@@ -83,6 +86,18 @@ public class User {
      *
      * @mbg.generated
      */
+
+
+    private String code;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public Integer getId() {
         return id;
     }

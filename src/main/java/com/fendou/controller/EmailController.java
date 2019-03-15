@@ -24,14 +24,19 @@ public class EmailController {
         Map<String,String > map = new HashMap<>();
         String code = UUID.randomUUID().toString();
         System.out.println(code);
+
+        map.put("codevalue", code);
+
         MailUtil mailUtil = new MailUtil(email,  code);
         mailUtil.run();
+
+
+
         if(email.matches("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$")){
             map.put("flag", "验证码发送成功！");
         }else{
             map.put("flag", "验证码发送失败");
         }
-
         Gson g = new Gson();
         String json = g.toJson(map);
         response.setContentType("text/json;charset=UTF-8");

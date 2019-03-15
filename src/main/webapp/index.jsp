@@ -172,7 +172,9 @@
         <c:if test="${category=='administrator'}" >
             <div style="padding: 15px; background: #dddddd;width: 100%;height: auto;">
                 <div class="layui-card" style="width: 70%; margin: 100px auto;">
-                    <div class="layui-card-header" style="font-size: 20px">管理员列表</div>
+                    <div class="layui-card-header" style="font-size: 30px;text-align: center">管理员列表
+                        <div style="float:right; margin-top: 7px;margin-right: 10px"> <a href="javascript:;" class="layui-btn layui-btn-normal" onclick="document.getElementById('light').style.display='block'; document.getElementById('fade').style.display='block'">新增用户</a>
+                            <a href="${pageContext.request.contextPath}/administrator/reToMain" class="layui-btn layui-btn-normal">返回首页</a></div></div>
                     <div class="layui-card-body">
                         <table class="layui-table">
                             <colgroup>
@@ -207,25 +209,9 @@
                             </c:forEach>
                             </tbody>
                         </table>
-                        <div style="margin:0 auto; width: 510px;height: 40px;">
-                            <a href="javascript:;" class="layui-btn layui-btn-normal" onclick="document.getElementById('light').style.display='block'; document.getElementById('fade').style.display='block'">新增用户</a>
-                            <div class="layui-btn-group">
-                                <button class="layui-btn layui-btn-sm">
-                                    <a href="javascript:;" class="layui-icon">首页</a>
-                                </button>
-                                <button class="layui-btn layui-btn-sm">
-                                    <a href="javascript:;" class="layui-icon">上一页</a>
-                                </button>
-                                <button class="layui-btn layui-btn-sm">
-                                    <a href="javascript:;" class="layui-icon">下一页</a>
-                                </button>
-                                <button class="layui-btn layui-btn-sm">
-                                    <a href="javascript:;" class="layui-icon">尾页</a>
-                                </button>
-
-                            </div>
-
-                            <a href="${pageContext.request.contextPath}/administrator/reToMain" class="layui-btn layui-btn-normal">返回首页</a>
+                        <div style="margin:0 auto; width: 700px;height: 40px;">
+                                <%--前台分页--%>
+                            <div id="pageContain"></div>
                         </div>
 
                     </div>
@@ -237,7 +223,8 @@
         <c:if test="${category=='user'}">
             <div style="padding: 15px; background: #dddddd;width: 100%;height:auto;">
                 <div style="width: 38%;margin: 110px auto; background-color: pink;padding-top: 50px">
-                    <form class="layui-form" action="${pageContext.request.contextPath}/index.jsp">
+                    <form class="layui-form" action="${pageContext.request.contextPath}/user/addUser" method="post">
+
                         <div class="layui-form-item">
                             <label class="layui-form-label">用户名：</label>
                             <div class="layui-input-block" style="width: 400px">
@@ -275,28 +262,21 @@
                             <label class="layui-form-label">邮&nbsp;&nbsp;&nbsp;&nbsp;箱：</label>
                             <div class="layui-input-block" style="width: 400px">
                                 <input type="text" name="email" lay-verify="required|email" id="emailId" required   placeholder="请输入您的邮箱地址" autocomplete="off" class="layui-input" >
+                                    <%--发送验证码的button--%>
+                                <input type="button" class="layui-btn layui-btn-warm" id="codeBtn" value="发送验证码"></input>
                             </div>
                         </div>
 
                         <div class="layui-form-item">
                             <label class="layui-form-label">验证码：</label>
                             <div class="layui-input-block" style="width: 400px ">
-                                <input type="text" name="code" required  lay-verify="required" placeholder="请填写验证码" autocomplete="off" class="layui-input" >
-                                    <%--发送验证码的button--%>
-                                <input type="button" class="layui-btn layui-btn-warm" id="codeBtn" value="发送验证码"></input>
-                                <span style="color: red;">验证码错误</span>
+                                <input type="text" id="codeValue" name="code" required  lay-verify="required" placeholder="请填写验证码" autocomplete="off" class="layui-input" >
                             </div>
-
-
                         </div>
-
-
-
-
                         <div class="layui-form-item">
                             <label class="layui-form-label">创建日期：</label>
                             <div class="layui-inline" style="width: 400px"> <!-- 注意：这一层元素并不是必须的 -->
-                                <input type="text"  id="test11" class="layui-input" lay-verify="required" name="rdate" placeholder="yyyy-MM-dd">
+                                <input type="text" name="rdate"  id="test11" class="layui-input" lay-verify="required" placeholder="yyyy-MM-dd">
                             </div>
                         </div>
 
@@ -311,7 +291,6 @@
                 </div>
             </div>
         </c:if>
-
     </div>
 
     <div class="layui-footer" style="text-align: center">
@@ -323,12 +302,18 @@
 
 <script>
     //JavaScript代码区域
-    layui.use(['element','carousel','laydate','form'], function(){
+    layui.use(['jquery','element','carousel','laydate','laypage','form','layer'], function(){
         var element = layui.element;
         var carousel = layui.carousel;
         var laydate = layui.laydate;
         var form = layui.form;
-        //建造实例
+        var laypage = layui.laypage;
+        var layer = layui.layer;
+        var $ = layui.$;
+        var jquery = layui.jquery;
+
+
+        // 建造实例
         carousel.render({
             elem: '#test1'
             ,width: '100%' //设置容器宽度
@@ -342,14 +327,6 @@
         laydate.render({
             elem: '#test11' //指定元素
         });
-
-        // 监听提交
-        // form.on('submit(formDemo)', function(data){
-        //     layer.msg(JSON.stringify(data.field));
-        //     return false;
-        // });
-
-
 
         form.verify({
             username: function(value, item){ //value：表单的值、item：表单的DOM对象
@@ -372,10 +349,7 @@
             ]
         });
     });
-</script>
-
-<script>
-
+    var codes = null;
     //点击发送验证码
     $("#codeBtn").click(function () {
         var email = $("#emailId").val();
@@ -387,14 +361,25 @@
             "/email/getCode",
             {"email":email},
             function (data) {
+                codes = data.codevalue;
                 layer.msg(data.flag);
             }
         );
-
     });
-</script>
 
-<script>
+    $("#codeValue").blur(function () {
+        var codevalue = $("#codeValue").val();
+        if(codevalue == codes){
+            layer.msg("验证码正确！");
+            $("#subBtn").attr("disabled",false);
+        }else{
+            layer.msg("验证码输入有误！");
+            $("#subBtn").attr("disabled",true);
+        }
+    });
+
+
+
 
     $("input[name='password2']").blur(function () {
         var password = $("input[name='password']").val();
@@ -411,7 +396,16 @@
         }
     });
 
+
+        <%--laypage.render({--%>
+        <%--elem: 'pageContain' //注意，这里的 test1 是 ID，不用加 # 号--%>
+        <%--,count: ${count} //数据总数，从服务端得到--%>
+        <%--,group:4--%>
+        <%--,layout:['count','prev', 'page', 'next','skip']--%>
+        <%--});--%>
 </script>
+
+
 
 
 </body>

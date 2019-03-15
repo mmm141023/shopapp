@@ -47,4 +47,6 @@ public interface AdminMapper {
     int updateByPrimaryKey(Admin record);
 
     Admin selectByNamePwd(@Param("aname") String aname, @Param("apwd") String apwd);
+
+    int counts();
 }
